@@ -206,7 +206,6 @@ h6 {
 	font-weight: 400;
 	line-height: 1.1;
 	color: inherit;
-	/*--clear:both;*/
 }
 
 html {
@@ -1137,10 +1136,24 @@ form[method="post"] + form[method="post"],
     background-color: #617486 !important;
 }
 
+.cbi-button-up,
+.cbi-button-down {
+	font-size: 1.2rem;
+	display: inline-block;
+	min-width: 0;
+	padding: .2rem .3rem;
+	color: transparent !important;
+	background: url(./icons/arrow.svg) no-repeat center;
+	background-size: 12px 20px;
+	background-color: #337ab7 !important;
+	border-color: #2e6da4 !important;
+}
+
+.cbi-button-up {
+	transform: scaleY(-1);
+}
 .cbi-button-find,
 .cbi-button-link,
-.cbi-button-up,
-.cbi-button-down,
 .cbi-button-neutral {
     color: #fff !important;
     background-color: #337ab7 !important;
