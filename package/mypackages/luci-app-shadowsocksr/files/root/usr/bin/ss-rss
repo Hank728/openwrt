@@ -1,21 +1,57 @@
 #!/bin/sh
 
 urlsafe_b64decode() {
-    local d="====" data=$(echo $1 | sed 's/_/\//g; s/-/+/g')
-    local mod4=$((${#data}%4))
-    [ $mod4 -gt 0 ] && data=${data}${d:mod4}
-    echo $data | base64 -d
+	local d="====" data=$(echo $1 | sed 's/_/\//g; s/-/+/g')
+	local mod4=$((${#data}%4))
+	[ $mod4 -gt 0 ] && data=${data}${d:mod4}
+	echo $data | base64 -d
 }
 
-server_update() {
+urldecode() {
+	data=$(echo $1 |sed 's/+/ /g;s/%\(..\)/\\x\1/g;')
+	echo -e $data
+}
+
+server_filter() {
+	server_name="$1"
+	filter="$2"
+	for i in $filter;
+	do
+		echo "$server_name"|grep "$i"
+		ret=$?
+		if [ $ret -eq 0 ]; then
+			return 1
+		fi
+	done
+	return 0
+}
+
+ssr_server_update() {
 local uci_set="uci -q set $1.$2."
-	${uci_set}alias="$host"
+	${uci_set}alias="$remark"
+	${uci_set}host="$host"
 	${uci_set}server="$server_ip"
 	${uci_set}server_port="$port"
 	${uci_set}encrypt_method="$method"
 	${uci_set}password="$password"
 	${uci_set}protocol_plugin="$protocol"
 	${uci_set}obfs_plugin="$obfs"
+	${uci_set}group="$subscribe_group"
+	${uci_set}no_delay="0"
+	${uci_set}timeout="60"
+	${uci_set}fastopen="0"
+}
+
+ss_server_update() {
+local uci_set="uci -q set $1.$2."
+	${uci_set}alias="$remark"
+	${uci_set}host="$host"
+	${uci_set}server="$server_ip"
+	${uci_set}server_port="$port"
+	${uci_set}encrypt_method="$method"
+	${uci_set}password="$password"
+	${uci_set}plugin="$plugin"
+	${uci_set}plugin_opts="$plugin_opts"
 	${uci_set}group="$subscribe_group"
 	${uci_set}no_delay="0"
 	${uci_set}timeout="60"
@@ -32,13 +68,14 @@ local uci_set="uci -q set $1.$2."
 	${uci_set}group="$subscribe_group"
 }
 
-if [ $# != 2 ]; then
-	echo "usage: ss-rss group_name subscribe_url"
+if [ $# != 3 ]; then
+	echo "usage: ss-rss group_name subscribe_url server_filter"
 	exit 0
 fi
 
 subscribe_group=""
 subscribe_url=""
+subscribe_filter=""
 if [ -z $subscribe_group ]; then
 	subscribe_group=$1
 fi
@@ -47,14 +84,19 @@ if [ -z $subscribe_url ]; then
 	subscribe_url=$2
 fi
 
+if [ -z $subscribe_filter ]; then
+	subscribe_filter=$3
+fi
+
 echo "group name: $subscribe_group"
 echo "subscribe url: $subscribe_url"
+echo "subscribe filter: $subscribe_filter"
 
 subscribe_data=$(wget-ssl --no-check-certificate -4 -t 3 -T 30 -O- ${subscribe_url})
 curl_code=$?
 if [ $curl_code -eq 0 ]; then
 	echo "delete shadowsocks server: $subscribe_group"
-	for i in `uci show shadowsocks | grep $subscribe_group | sed -r 's/.*\[(.*)\].*/\1/' | sort -rn`
+	for i in `uci show shadowsocks | grep group | grep $subscribe_group | sed -r 's/.*\[(.*)\].*/\1/' | sort -rn`;
 	do
 		echo "$i"
 		uci show shadowsocks.@servers[${i}]
@@ -62,7 +104,7 @@ if [ $curl_code -eq 0 ]; then
 	done
 
 	echo "delete haproxy-tcp server: $subscribe_group"
-	for i in `uci show haproxy-tcp | grep $subscribe_group | sed -r 's/.*\[(.*)\].*/\1/' | sort -rn`
+	for i in `uci show haproxy-tcp | grep $subscribe_group | sed -r 's/.*\[(.*)\].*/\1/' | sort -rn`;
 	do
 		echo "$i"
 		uci show haproxy-tcp.@main_server[${i}]
@@ -91,7 +133,7 @@ if [ $curl_code -eq 0 ]; then
 					obfsparam=$value
 					;;
 				remarks):
-					remarks=$value
+					remarks=$(urldecode $value)
 					;;
 				group):
 					group=$value
@@ -123,11 +165,65 @@ if [ $curl_code -eq 0 ]; then
 			echo ""
 
 			uci_cfg_name=$(uci add shadowsocks servers)
-			server_update shadowsocks $uci_cfg_name
+			ssr_server_update shadowsocks $uci_cfg_name
 
 			uci_cfg_name=$(uci add haproxy-tcp main_server)
 			haproxy_update haproxy-tcp $uci_cfg_name
 		fi
+		if [ "$type" = "ss" ]; then
+			info=${server//ss:\/\//}
+			encrypt=$(urlsafe_b64decode $(echo "$info" | awk -F '@' '{print $1}'))
+			basic=$(echo "$info" | awk -F '@' '{print $2}')
+			eval $(echo $encrypt | awk -F ':' '{printf("method=%s;password=%s",$1,$2)}')
+			server=$(echo $basic | awk -F '[\/][?]' '{print $1}')
+			left=$(echo $basic | awk -F '[\/][?]' '{print $2}')
+			eval $(echo $server | awk -F ':' '{printf("host=%s;port=%s",$1,$2)}')
+                        server_ip=$host
+			eval $(echo $left | awk -F '&' '{printf("plugin=%s;group=%s",$1,$2)}')
+			param=$(urldecode $plugin)
+			eval $(echo $param | awk -F ';' '{printf("plugin=%s;obfs=%s;obfs_host=%s",$1,$2,$3)}')
+			plugin=$(echo $plugin | awk -F '=' '{print $2}')
+			plugin_opts=$(echo $obfs";"$obfs_host)
+
+			remark=$(echo $group | awk -F '#' '{print $2}')
+			remark=$(urldecode $remark)
+			server_filter "$remark" "$subscribe_filter"
+			ret=$?
+			if [ $ret -eq 0 ]; then
+				continue
+			fi
+			group=$(echo $group | awk -F '#' '{print $1}')
+			group=$(echo $group | awk -F '=' '{print $2}')
+			group=$(urlsafe_b64decode $group)
+
+			for ip in $(resolveip $host 2>/dev/null); do
+				server_ip=$ip
+				break
+			done
+
+			let counter++
+			echo "==========================="
+			echo "${counter}th server"
+			echo "type: $type"
+			echo "host: $host"
+			echo "server: $server_ip"
+			echo "port: $port"
+			echo "method: $method"
+			echo "plugin: $plugin"
+			echo "plugin_opts: $plugin_opts"
+			echo "password: $password"
+			echo "group: $group"
+			echo "remark: $remark"
+			echo "==========================="
+			echo ""
+
+			uci_cfg_name=$(uci add shadowsocks servers)
+			ss_server_update shadowsocks $uci_cfg_name
+
+			uci_cfg_name=$(uci add haproxy-tcp main_server)
+			haproxy_update haproxy-tcp $uci_cfg_name
+		fi
+
         done
 
 	uci commit shadowsocks
