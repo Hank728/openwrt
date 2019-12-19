@@ -1,10 +1,10 @@
 diff --git a/net/samba4/Config.in b/net/samba4/Config.in
-index 17a6cf2..10cbdc3 100644
+index 988c05f..d373a2c 100644
 --- a/net/samba4/Config.in
 +++ b/net/samba4/Config.in
-@@ -57,3 +57,10 @@ config SAMBA4_SERVER_QUOTAS
- 
- 		Support for disk quotas using the quotas VFS module (vfs_default_quota)
+@@ -51,3 +51,10 @@ config SAMBA4_SERVER_AD_DC
+ 		HINT: see section (# Using the Domain Controller as a File Server)
+ 		NOTE: Extroot is recommend for this setup, as it is not optimized to run completely from RAM/tempfs!
  	default n
 +
 +config SAMBA4_SERVER_HOTPLUG
@@ -14,18 +14,18 @@ index 17a6cf2..10cbdc3 100644
 +		Provide hotplug support.
 +	default y
 diff --git a/net/samba4/Makefile b/net/samba4/Makefile
-index b4e7690..953f37e 100644
+index f846be3..07f51a3 100644
 --- a/net/samba4/Makefile
 +++ b/net/samba4/Makefile
-@@ -30,6 +30,7 @@ PKG_CONFIG_DEPENDS:= \
+@@ -29,6 +29,7 @@ PKG_CONFIG_DEPENDS:= \
+ 	CONFIG_SAMBA4_SERVER_VFS \
  	CONFIG_SAMBA4_SERVER_VFSX \
- 	CONFIG_SAMBA4_SERVER_QUOTAS \
- 	CONFIG_SAMBA4_SERVER_ACL \
+ 	CONFIG_SAMBA4_SERVER_AD_DC \
 +	CONFIG_SAMBA4_SERVER_HOTPLUG \
  	CONFIG_PACKAGE_kmod-fs-btrfs \
  	CONFIG_PACKAGE_kmod-fs-xfs
  
-@@ -165,7 +166,6 @@ CONFIGURE_ARGS += \
+@@ -194,7 +195,6 @@ HOST_CONFIGURE_ARGS += \
  		--disable-rpath-private-install \
  		--enable-fhs \
  		--without-automount \
@@ -33,7 +33,7 @@ index b4e7690..953f37e 100644
  		--without-lttng \
  		--without-ntvfs-fileserver \
  		--without-pam \
-@@ -397,6 +397,12 @@ endif
+@@ -410,6 +410,12 @@ endif
  	$(INSTALL_CONF) ./files/samba.config $(1)/etc/config/samba4
  	$(INSTALL_DATA) ./files/smb.conf.template $(1)/etc/samba
  	$(INSTALL_BIN) ./files/samba.init $(1)/etc/init.d/samba4
@@ -271,7 +271,7 @@ index 0000000..5416cbc
 +	config_foreach samba_cfg_delete sambashare $1
 +}
 diff --git a/net/samba4/waf-cross-answers/arm.txt b/net/samba4/waf-cross-answers/arm.txt
-index 79ba994..728795f 100644
+index 5a7c2ea..8d9f49d 100644
 --- a/net/samba4/waf-cross-answers/arm.txt
 +++ b/net/samba4/waf-cross-answers/arm.txt
 @@ -1,11 +1,15 @@
@@ -293,27 +293,20 @@ index 79ba994..728795f 100644
  Checking for C99 vsnprintf: "1"
  Checking for HAVE_SHARED_MMAP: OK
  Checking for HAVE_MREMAP: OK
-@@ -15,17 +19,18 @@ Checking for HAVE_IFACE_GETIFADDRS: OK
- Checking value of NSIG: "65"
- Checking value of _NSIG: "65"
- Checking value of SIGRTMAX: "64"
--Checking value of SIGRTMIN: "35"
-+Checking value of SIGRTMIN: "34"
+@@ -18,12 +22,13 @@ Checking value of SIGRTMAX: "64"
+ Checking value of SIGRTMIN: "35"
  Checking for a 64-bit host to support lmdb: NO
--Checking whether the WRFILE -keytab is supported: OK
+ Checking whether the WRFILE -keytab is supported: OK
 -Checking errno of iconv for illegal multibyte sequence: OK
 +Checking errno of iconv for illegal multibyte sequence: (255, "")
  Checking for kernel change notify support: OK
  Checking for Linux kernel oplocks: OK
  Checking for kernel share modes: OK
 -Checking if can we convert from CP850 to UCS-2LE: OK
+-Checking if can we convert from UTF-8 to UCS-2LE: OK
 +Checking whether POSIX capabilities are available: OK
 +Checking if can we convert from CP850 to UCS-2LE: (255, "")
 +Checking if can we convert from IBM850 to UCS-2LE: (255, "")
- Checking if can we convert from UTF-8 to UCS-2LE: OK
  vfs_fileid checking for statfs() and struct statfs.f_fsid: OK
--Checking whether we can use Linux thread-specific credentials with 32-bit system calls: "OK"
-+Checking whether we can use Linux thread-specific credentials with 32-bit system calls: OK
+ Checking whether we can use Linux thread-specific credentials with 32-bit system calls: OK
  Checking whether fcntl locking is available: OK
- Checking whether fcntl lock supports open file description locks: NO
- Checking for the maximum value of the 'time_t' type: NO
