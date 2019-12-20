@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7f13c4f..9f5bc6b 100644
+index a586577..b044616 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -33,6 +33,7 @@ ADD_LIBRARY(blkid-tiny SHARED
+@@ -34,6 +34,7 @@ ADD_LIBRARY(blkid-tiny SHARED
  		libblkid-tiny/squashfs.c
  		libblkid-tiny/btrfs.c
  		libblkid-tiny/f2fs.c
@@ -163,10 +163,10 @@ index 0000000..89d7608
 +	}
 +};
 diff --git a/libblkid-tiny/libblkid-tiny.c b/libblkid-tiny/libblkid-tiny.c
-index a30f619..90928d6 100644
+index 52470ca..a3fc570 100644
 --- a/libblkid-tiny/libblkid-tiny.c
 +++ b/libblkid-tiny/libblkid-tiny.c
-@@ -11,11 +11,15 @@
+@@ -11,8 +11,12 @@
  #define DEBUG(fmt, ...)
  #endif
  
@@ -174,24 +174,21 @@ index a30f619..90928d6 100644
 +
  int blkid_debug_mask = 0;
  
- static unsigned char *probe_buffer;
- static unsigned int probe_buffer_size = 0;
- 
 +extern __off64_t lseek64 (int __fd, __off64_t __offset, int __whence) __THROW;
 +
  int get_linux_version (void)
  {
  	static int kver = -1;
-@@ -100,7 +104,7 @@ unsigned char *blkid_probe_get_buffer(blkid_probe pr,
- 
- 	memset(probe_buffer, 0, probe_buffer_size);
+@@ -87,7 +91,7 @@ unsigned char *blkid_probe_get_buffer(blkid_probe pr,
+ 	memset(bf, 0, sizeof(*bf));
+ 	bf->data = ((unsigned char *)bf) + sizeof(*bf);
  
 -	lseek(pr->fd, off, SEEK_SET);
 +	lseek64(pr->fd, off, SEEK_SET);
- 	ret = read(pr->fd, probe_buffer, len);
+ 	ret = read(pr->fd, bf->data, len);
  
- 	if (ret != len)
-@@ -121,21 +125,6 @@ int blkid_probe_set_label(blkid_probe pr, unsigned char *label, size_t len)
+ 	if (ret != len) {
+@@ -119,21 +123,6 @@ int blkid_probe_set_label(blkid_probe pr, unsigned char *label, size_t len)
  	return 0;
  }
  
@@ -213,7 +210,7 @@ index a30f619..90928d6 100644
  int blkid_probe_set_uuid_as(blkid_probe pr, unsigned char *uuid, const char *name)
  {
  	short unsigned int*u = (short unsigned int*) uuid;
-@@ -167,6 +156,35 @@ int blkid_probe_sprintf_uuid(blkid_probe pr, unsigned char *uuid,
+@@ -165,6 +154,35 @@ int blkid_probe_sprintf_uuid(blkid_probe pr, unsigned char *uuid,
  	return 0;
  }
  
@@ -249,7 +246,7 @@ index a30f619..90928d6 100644
  static const struct blkid_idinfo *idinfos[] =
  {
  	&vfat_idinfo,
-@@ -186,6 +204,7 @@ static const struct blkid_idinfo *idinfos[] =
+@@ -184,6 +202,7 @@ static const struct blkid_idinfo *idinfos[] =
  	&hfs_idinfo,
  	&btrfs_idinfo,
  	&f2fs_idinfo,
@@ -258,7 +255,7 @@ index a30f619..90928d6 100644
  
  int probe_block(char *block, struct blkid_struct_probe *pr)
 diff --git a/libblkid-tiny/ntfs.c b/libblkid-tiny/ntfs.c
-index 3a9d5cb..c698f0f 100644
+index 2426e70..3f871b2 100644
 --- a/libblkid-tiny/ntfs.c
 +++ b/libblkid-tiny/ntfs.c
 @@ -81,7 +81,7 @@ enum {
@@ -270,7 +267,7 @@ index 3a9d5cb..c698f0f 100644
  	struct master_file_table_record *mft;
  
  	uint32_t sectors_per_cluster, mft_record_size;
-@@ -96,6 +96,8 @@ static int probe_ntfs(blkid_probe pr, const struct blkid_idmag *mag)
+@@ -97,6 +97,8 @@ static int probe_ntfs(blkid_probe pr, const struct blkid_idmag *mag)
  	/*
  	 * Check bios parameters block
  	 */
@@ -280,11 +277,11 @@ index 3a9d5cb..c698f0f 100644
  	sectors_per_cluster = ns->bpb.sectors_per_cluster;
  
 diff --git a/libblkid-tiny/superblocks.h b/libblkid-tiny/superblocks.h
-index cde8a40..d854a2b 100644
+index ade2ae0..9329b9d 100644
 --- a/libblkid-tiny/superblocks.h
 +++ b/libblkid-tiny/superblocks.h
 @@ -100,5 +100,7 @@ extern int blkid_probe_set_id_label(blkid_probe pr, const char *name,
- 			     unsigned char *data, size_t len);
+ 			     const unsigned char *data, size_t len);
  extern int blkid_probe_set_utf8_id_label(blkid_probe pr, const char *name,
  			     unsigned char *data, size_t len, int enc);
 +extern size_t blkid_encode_to_utf8(int enc, unsigned char *dest, size_t len,
