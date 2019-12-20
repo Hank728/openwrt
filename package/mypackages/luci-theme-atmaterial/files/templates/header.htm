@@ -94,7 +94,7 @@
 						E('a', {
 							'href': hasChildren ? '#' : L.url(url, children[i].name),
 							'class': hasChildren ? 'menu' : null,
-							'data-title': hasChildren ? null : _(children[i].title),
+							'data-title': hasChildren ? _(children[i].name) : _(children[i].name),
 						}, [ _(children[i].title) ]),
 						submenu
 					]));
@@ -148,7 +148,7 @@
 					    className = 'tabmenu-item-%s %s'.format(children[i].name, activeClass);
 
 					ul.appendChild(E('li', { 'class': className }, [
-						E('a', { 'href': L.url(url, children[i].name) }, [ _(children[i].title) ] )
+						E('a', { 'href': L.url(url, children[i].name) }, [ _(pcdata(children[i].title)) ] )
 					]));
 
 					if (isActive)
