@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2014-2018 Jian Chang <aa65535@live.com>
+# Copyright (C) 2014-2019 Jian Chang <aa65535@live.com>
 #
 # This is free software, licensed under the GNU General Public License v3.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shadowsocks-libev
-PKG_VERSION:=3.3.0
+PKG_VERSION:=3.3.3
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-libev.git
-PKG_SOURCE_VERSION:=ffad914dddb671c378e3060954d6d9fd6d492755
+PKG_SOURCE_VERSION:=e2765847cce57a24d845fcb969fdba6cc1420cf3
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
 
@@ -27,7 +27,7 @@ PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
 PKG_USE_MIPS16:=0
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=libev libpcre libcares libsodium libmbedtls
+PKG_BUILD_DEPENDS:=c-ares libev libsodium mbedtls pcre
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_SHADOWSOCKS_STATIC_LINK \
@@ -44,7 +44,7 @@ define Package/shadowsocks-libev
 	CATEGORY:=Network
 	TITLE:=Lightweight Secured Socks5 Proxy
 	URL:=https://github.com/shadowsocks/shadowsocks-libev
-	DEPENDS:=+zlib +libpthread \
+	DEPENDS:=+libpthread \
 		+!SHADOWSOCKS_WITH_EV:libev \
 		+!SHADOWSOCKS_WITH_PCRE:libpcre \
 		+!SHADOWSOCKS_WITH_CARES:libcares \
