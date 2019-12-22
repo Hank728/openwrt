@@ -137,7 +137,7 @@ load_package_config() {
 	config_get_bool serviceEnabled      'config' 'enabled' 0
 	config_get_bool strictMode          'config' 'strict_enforcement' 1
 	config_get_bool ipv6Enabled         'config' 'ipv6_enabled' 0
-	config_get_bool localIpset          'config' 'src_ipset'
+	config_get_bool localIpset          'config' 'src_ipset' 0
 	config_get_bool ipruleEnabled       'config' 'iprule_enabled' 0
 	config_get remoteIpset              'config' 'dest_ipset'
 	config_get appendLocalPolicy        'config' 'append_src_rules'
@@ -876,9 +876,7 @@ service_triggers() {
 			validate_include
 		procd_close_validate
 
-		procd_add_reload_trigger 'firewall'
-		procd_add_reload_trigger 'openvpn'
-		procd_add_reload_trigger 'vpn-policy-routing'
+		procd_add_reload_trigger 'firewall' 'openvpn' 'vpn-policy-routing'
 		procd_open_trigger
 			for n in $ifSupported; do procd_add_reload_interface_trigger "$n"; procd_add_interface_trigger "interface.*" "$n" /etc/init.d/${packageName} reload; done;
 #			output "$serviceName monitoring interfaces: $ifSupported\\n"; # output_okn;
