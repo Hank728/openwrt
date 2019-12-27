@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-rslsync
-PKG_VERSION:=2.6.3
+PKG_VERSION:=2.6.4
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=paradislover <wxu1986@gmail.com>
