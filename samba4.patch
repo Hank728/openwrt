@@ -46,22 +46,6 @@ index f846be3..07f51a3 100644
  endef
  
  define Package/samba4-server/conffiles
-diff --git a/net/samba4/waf-cross-answers/arm.txt b/net/samba4/waf-cross-answers/arm.txt
-index 5a7c2ea..27587fd 100644
---- a/net/samba4/waf-cross-answers/arm.txt
-+++ b/net/samba4/waf-cross-answers/arm.txt
-@@ -22,8 +22,9 @@ Checking errno of iconv for illegal multibyte sequence: OK
- Checking for kernel change notify support: OK
- Checking for Linux kernel oplocks: OK
- Checking for kernel share modes: OK
--Checking if can we convert from CP850 to UCS-2LE: OK
--Checking if can we convert from UTF-8 to UCS-2LE: OK
-+Checking whether POSIX capabilities are available: OK
-+Checking if can we convert from CP850 to UCS-2LE: (255, "")
-+Checking if can we convert from IBM850 to UCS-2LE: (255, "")
- vfs_fileid checking for statfs() and struct statfs.f_fsid: OK
- Checking whether we can use Linux thread-specific credentials with 32-bit system calls: OK
- Checking whether fcntl locking is available: OK
 diff --git a/net/samba4/files/samba.hotplug b/net/samba4/files/samba.hotplug
 new file mode 100644
 index 0000000..111f0cd
