@@ -17,7 +17,7 @@ server_filter() {
 	filter="$2"
 	for i in $filter;
 	do
-		echo "$server_name"|grep "$i"
+		echo "$server_name"|grep -q "$i"
 		ret=$?
 		if [ $ret -eq 0 ]; then
 			return 1
@@ -179,11 +179,19 @@ if [ $curl_code -eq 0 ]; then
 			left=$(echo $basic | awk -F '[\/][?]' '{print $2}')
 			eval $(echo $server | awk -F ':' '{printf("host=%s;port=%s",$1,$2)}')
                         server_ip=$host
-			eval $(echo $left | awk -F '&' '{printf("plugin=%s;group=%s",$1,$2)}')
-			param=$(urldecode $plugin)
-			eval $(echo $param | awk -F ';' '{printf("plugin=%s;obfs=%s;obfs_host=%s",$1,$2,$3)}')
-			plugin=$(echo $plugin | awk -F '=' '{print $2}')
-			plugin_opts=$(echo $obfs";"$obfs_host)
+			echo "$left"|grep -q "plugin"
+		        is_plugin=$?
+                        if [ $is_plugin -eq 0 ]; then
+				eval $(echo $left | awk -F '&' '{printf("plugin=%s;group=%s",$1,$2)}')
+				param=$(urldecode $plugin)
+				eval $(echo $param | awk -F ';' '{printf("plugin=%s;obfs=%s;obfs_host=%s",$1,$2,$3)}')
+				plugin=$(echo $plugin | awk -F '=' '{print $2}')
+				plugin_opts=$(echo $obfs";"$obfs_host)
+                        else
+				group=$left
+				plugin=""
+				plugin_opts=""
+			fi
 
 			remark=$(echo $group | awk -F '#' '{print $2}')
 			remark=$(urldecode $remark)
@@ -202,6 +210,7 @@ if [ $curl_code -eq 0 ]; then
 			done
 
 			let counter++
+			echo $remark
 			echo "==========================="
 			echo "${counter}th server"
 			echo "type: $type"
