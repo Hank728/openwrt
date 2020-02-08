@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnscrypt-proxy-v2
-PKG_VERSION:=2.0.36
+PKG_VERSION:=2.0.39
 PKG_RELEASE:=1
 PKG_MAINTAINER:=Maintainer Name <email@gmail.com>
 PKG_LICENSE:=GPL-3.0
@@ -16,7 +16,7 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE:=dnscrypt-proxy-linux_$(ARCH)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/jedisct1/dnscrypt-proxy/releases/download/$(PKG_VERSION)/
-PKG_HASH:=7ca775354de57a9bd3346881535cb92ee131fac00b28d852f08dcaf9d702aa5a
+PKG_HASH:=8c177c639b566313a74a2f6a68eb84bff4740cbef799d9b78d0f2195660d9503
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
 PKG_INSTALL:=1
