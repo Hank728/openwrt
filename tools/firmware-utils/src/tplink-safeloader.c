@@ -1240,8 +1240,7 @@ static struct device_info boards[] = {
 		*/
 		.partitions = {
 			{"fs-uboot", 0x00000, 0x20000},
-			{"os-image", 0x20000, 0x150000},
-			{"file-system", 0x170000, 0x240000},
+			{"firmware", 0x20000, 0x390000},
 			{"partition-table", 0x3b0000, 0x02000},
 			{"default-mac", 0x3c0000, 0x00020},
 			{"pin", 0x3c0100, 0x00020},
@@ -1435,6 +1434,49 @@ static struct device_info boards[] = {
 
 		.first_sysupgrade_partition = "os-image",
 		.last_sysupgrade_partition = "file-system",
+	},
+
+  /** Firmware layout for the RE200 v2 */
+	{
+		.id     = "RE200-V2",
+		.vendor = "",
+		.support_list =
+			"SupportList:\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:00000000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:41520000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:41550000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:42520000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:43410000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:45530000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:45550000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:49440000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:4a500000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:4b520000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:52550000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:54570000}\n"
+			"{product_name:RE200,product_ver:2.0.0,special_id:55530000}\n",
+		.support_trail = '\x00',
+		.soft_ver = NULL,
+
+		.partitions = {
+			{"fs-uboot", 0x00000, 0x20000},
+			{"firmware", 0x20000, 0x7a0000},
+			{"partition-table", 0x7c0000, 0x02000},
+			{"default-mac", 0x7c2000, 0x00020},
+			{"pin", 0x7c2100, 0x00020},
+			{"product-info", 0x7c3100, 0x01000},
+			{"soft-version", 0x7c4200, 0x01000},
+			{"support-list", 0x7c5200, 0x01000},
+			{"profile", 0x7c6200, 0x08000},
+			{"config-info", 0x7ce200, 0x00400},
+			{"user-config", 0x7d0000, 0x10000},
+			{"default-config", 0x7e0000, 0x10000},
+			{"radio", 0x7f0000, 0x10000},
+			{NULL, 0, 0}
+		},
+
+		.first_sysupgrade_partition = "os-image",
+		.last_sysupgrade_partition = "file-system"
 	},
 
   /** Firmware layout for the RE305 v1 */
