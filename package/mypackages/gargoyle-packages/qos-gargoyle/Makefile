@@ -16,7 +16,7 @@ define Package/qos-gargoyle
 	CATEGORY:=Gargoyle
 	SUBMENU:=Network
 	TITLE:=A set of QoS scripts
-	DEPENDS:=+tc +ip +kmod-sched +iptables-mod-filter +iptables-mod-ipopt +iptables-mod-imq
+	DEPENDS:=+tc +ip +kmod-sched +iptables-mod-filter +iptables-mod-ipopt +iptables-mod-imq +libcap
 	MAINTAINER:=Xingwang Liao <kuoruan@gmail.com>
 	PKGARCH:=all
 endef
