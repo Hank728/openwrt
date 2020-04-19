@@ -2237,7 +2237,8 @@ span[data-tooltip] .label {
 	flex-direction: column;
 }
 
-.label {
+.label,
+[data-indicator] {
 	font-size: .8rem;
 	font-weight: bold;
 	padding: .3rem .8rem;
@@ -2315,7 +2316,8 @@ header > .fill > .container > .pull-right > * {
 }
 
 
-.notice {
+.notice,
+[data-indicator]:not([data-style="inactive"]) {
 	background-color: #5BC0DE;
 }
 
@@ -2659,7 +2661,8 @@ body.lang_pl.node-main-login .cbi-value-title {
 		max-width: 21.9rem;
 	}
 
-	.label {
+	.label,
+	[data-indicator] {
 		padding: .2rem .6rem;
 	}
 

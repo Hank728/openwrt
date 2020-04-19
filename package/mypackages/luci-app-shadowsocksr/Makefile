@@ -89,6 +89,8 @@ define Package/luci-app-shadowsocksr/install
 	$(INSTALL_BIN) ./files/root/usr/bin/ss-domain $(1)/usr/bin/ss-domain
 	$(INSTALL_BIN) ./files/root/usr/bin/ss-switch $(1)/usr/bin/ss-switch
 	$(INSTALL_BIN) ./files/root/usr/bin/ss-rss $(1)/usr/bin/ss-rss
+	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
+	$(INSTALL_DATA) ./files/root/usr/share/rpcd/acl.d/luci-app-shadowsocksr.json $(1)/usr/share/rpcd/acl.d/luci-app-shadowsocksr.json
 endef
 
 Package/luci-app-shadowsocksr-without-ipset/install = $(call Package/luci-app-shadowsocksr/install,$(1),-without-ipset)

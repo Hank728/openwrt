@@ -81,6 +81,8 @@ define Package/luci-app-haproxy-tcp/install
 	$(INSTALL_BIN) ./files/root/etc/uci-defaults/luci-haproxy-tcp $(1)/etc/uci-defaults/luci-haproxy-tcp
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(LN) haproxy $(1)/usr/sbin/haproxy-tcp
+	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
+	$(INSTALL_DATA) ./files/root/usr/share/rpcd/acl.d/luci-app-haproxy-tcp.json $(1)/usr/share/rpcd/acl.d/luci-app-haproxy-tcp.json
 endef
 
 $(eval $(call BuildPackage,luci-app-haproxy-tcp))

@@ -69,6 +69,8 @@ define Package/luci-app-chnroute/install
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/chnroute.zh-cn.lmo $(1)/usr/lib/lua/luci/i18n/chnroute.zh-cn.lmo
 	$(INSTALL_DATA) ./files/luci/model/chnroute.lua $(1)/usr/lib/lua/luci/model/cbi/chnroute.lua
 	$(INSTALL_DATA) ./files/luci/controller/chnroute.lua $(1)/usr/lib/lua/luci/controller/chnroute.lua
+	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
+	$(INSTALL_DATA) ./files/root/usr/share/rpcd/acl.d/luci-app-chinaroutes.json $(1)/usr/share/rpcd/acl.d/luci-app-chinaroutes.json
 endef
 
 $(eval $(call BuildPackage,luci-app-chnroute))

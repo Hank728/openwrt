@@ -76,6 +76,8 @@ define Package/luci-app-domainlist/install
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/domainlist.zh-cn.lmo $(1)/usr/lib/lua/luci/i18n/domainlist.zh-cn.lmo
 	$(INSTALL_DATA) ./files/luci/model/domainlist.lua $(1)/usr/lib/lua/luci/model/cbi/domainlist.lua
 	$(INSTALL_DATA) ./files/luci/controller/domainlist.lua $(1)/usr/lib/lua/luci/controller/domainlist.lua
+	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
+	$(INSTALL_DATA) ./files/root/usr/share/rpcd/acl.d/luci-app-domainlist.json $(1)/usr/share/rpcd/acl.d/luci-app-domainlist.json
 endef
 
 $(eval $(call BuildPackage,luci-app-domainlist))

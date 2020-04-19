@@ -1,0 +1,11 @@
+{
+	"luci-app-chinaroutes": {
+		"description": "Grant UCI access for luci-app-chinaroutes",
+		"read": {
+			"uci": [ "chnroute" ]
+		},
+		"write": {
+			"uci": [ "chnroute" ]
+		}
+	}
+}

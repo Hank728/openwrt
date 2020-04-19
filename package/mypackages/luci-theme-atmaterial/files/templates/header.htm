@@ -165,7 +165,7 @@
 			}
 
 			document.addEventListener('luci-loaded', function(ev) {
-				var tree = <%= luci.http.write_json(luci.dispatcher.context.authsession and luci.dispatcher.menu_json() or {}) %>,
+				var tree = <%= luci.http.write_json(luci.dispatcher.menu_json() or {}) %>,
 				    node = tree,
 				    url = '';
 
@@ -190,7 +190,7 @@
 		<div class="container">
 			<span class="showSide"></span>
 			<a class="brand" href="#"><%=boardinfo.hostname or "?"%></a>
-			<div class="pull-right">
+			<div class="pull-right" id="indicators">
 				<span id="xhr_poll_status" style="display:none" onclick="XHR.running() ? XHR.halt() : XHR.run()">
 					<span class="label success" id="xhr_poll_status_on"><span class="mobile-hide"><%:Auto Refresh%></span> <%:on%></span>
 					<span class="label" id="xhr_poll_status_off" style="display:none"><span class="mobile-hide"><%:Auto Refresh%></span> <%:off%></span>

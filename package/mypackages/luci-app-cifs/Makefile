@@ -64,6 +64,9 @@ define Package/luci-app-cifs/install
 
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/model/cbi
 	$(INSTALL_DATA) ./files/cifs-model.lua $(1)/usr/lib/lua/luci/model/cbi/cifs.lua
+
+	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
+	$(INSTALL_DATA) ./files/luci-app-cifs.json $(1)/usr/share/rpcd/acl.d/luci-app-cifs.json
 endef
 
 $(eval $(call BuildPackage,luci-app-cifs))

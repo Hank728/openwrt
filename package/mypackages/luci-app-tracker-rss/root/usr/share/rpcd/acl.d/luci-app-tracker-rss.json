@@ -1,0 +1,11 @@
+{
+	"luci-app-tracker-rss": {
+		"description": "Grant UCI access for luci-app-tracker-rss",
+		"read": {
+			"uci": [ "tracker-rss" ]
+		},
+		"write": {
+			"uci": [ "tracker-rss" ]
+		}
+	}
+}
