@@ -201,6 +201,15 @@ define Device/avm_fritz4020
 endef
 TARGET_DEVICES += avm_fritz4020
 
+define Device/avm_fritz450e
+  $(Device/avm)
+  SOC := qca9556
+  IMAGE_SIZE := 15232k
+  DEVICE_MODEL := FRITZ!WLAN Repeater 450E
+  SUPPORTED_DEVICES += fritz450e
+endef
+TARGET_DEVICES += avm_fritz450e
+
 define Device/buffalo_bhr-4grv
   SOC := ar7242
   DEVICE_VENDOR := Buffalo
@@ -294,6 +303,16 @@ define Device/comfast_cf-e120a-v3
   IMAGE_SIZE := 8000k
 endef
 TARGET_DEVICES += comfast_cf-e120a-v3
+
+define Device/comfast_cf-e130n-v2
+  SOC := qca9531
+  DEVICE_VENDOR := COMFAST
+  DEVICE_MODEL := CF-E130N
+  DEVICE_VARIANT := v2
+  DEVICE_PACKAGES := rssileds kmod-leds-gpio -swconfig -uboot-envtools
+  IMAGE_SIZE := 7936k
+endef
+TARGET_DEVICES += comfast_cf-e130n-v2
 
 define Device/comfast_cf-e313ac
   SOC := qca9531
@@ -621,6 +640,14 @@ define Device/engenius_ews511ap
 endef
 TARGET_DEVICES += engenius_ews511ap
 
+define Device/enterasys_ws-ap3705i
+  SOC := ar9344
+  DEVICE_VENDOR := Enterasys
+  DEVICE_MODEL := WS-AP3705i
+  IMAGE_SIZE := 30528k
+endef
+TARGET_DEVICES += enterasys_ws-ap3705i
+
 define Device/etactica_eg200
   SOC := ar9331
   DEVICE_VENDOR := eTactica
@@ -820,7 +847,7 @@ define Device/nec_wg800hp
   IMAGE/factory.bin := append-kernel | pad-to $$$$(BLOCKSIZE) | \
 	append-rootfs | pad-rootfs | check-size | \
 	xor-image -p 6A57190601121E4C004C1E1201061957 -x | nec-fw LASER_ATERM
-  DEVICE_PACKAGES := kmod-ath10k-ct-smallbuffers ath10k-firmware-qca9887-ct-htt
+  DEVICE_PACKAGES := kmod-ath10k-ct-smallbuffers ath10k-firmware-qca9887-ct-full-htt
 endef
 TARGET_DEVICES += nec_wg800hp
 
@@ -1148,6 +1175,12 @@ define Device/teltonika_rut955
 	check-size
 endef
 TARGET_DEVICES += teltonika_rut955
+
+define Device/teltonika_rut955-h7v3c0
+  $(Device/teltonika_rut955)
+  DEVICE_VARIANT := H7V3C0
+endef
+TARGET_DEVICES += teltonika_rut955-h7v3c0
 
 define Device/trendnet_tew-823dru
   SOC := qca9558
