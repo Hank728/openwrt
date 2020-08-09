@@ -171,7 +171,7 @@ restart() {
 		config_foreach mount_natshare natshare
 		if [ -f "/etc/config/samba4" ]; then
 			/etc/init.d/samba4 restart
-		else
+		elif [ -f "/etc/config/samba" ]; then
 			/etc/init.d/samba restart
 		fi
 
